@@ -1,11 +1,15 @@
 {
-  "corpus": "demo/specifications",
+  "corpus": "demo/travaux",
   "sources": [
     {
-      "path": "SSS.md",
-      "document_id": "SSS-DEMO",
-      "revision": "0.1",
-      "metadata": {"baseline": "demo", "status": "example", "type": "SSS"}
+      "path": "devis-travaux.md",
+      "document_id": "DEV-2026-0042",
+      "revision": "1.0",
+      "metadata": {
+        "project": "renovation-salon",
+        "status": "example",
+        "type": "devis"
+      }
     }
   ]
 }

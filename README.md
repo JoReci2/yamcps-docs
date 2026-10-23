@@ -20,7 +20,7 @@ yamcps configs set --connector docs
 ```
 
 Laisser les champs `index` et `model` vides pour utiliser l'index par défaut du
-moteur et la recherche lexicale. Depuis la racine de ce dépôt, essayer le corpus
+moteur et la recherche lexicale. Depuis la racine de ce dépôt, essayer le devis de travaux
 fictif fourni :
 
 ```sh
@@ -30,11 +30,15 @@ yamcps serve --connector docs
 
 Les fichiers d'exemple sont disponibles dans [examples](examples) ; hors du dépôt,
 les copier ensemble dans un dossier local. Depuis le client MCP, demander de
-rechercher `SSS-REQ-0042` dans le corpus `demo/specifications`.
+rechercher `DEV-2026-0042` dans le corpus `demo/travaux`.
 
 Le serveur n'ingère rien au démarrage. Utiliser le même compte et la même
 configuration pour l'ingestion et le serveur. Le manifeste remplace le contenu du
 corpus désigné : ne pas utiliser l'exemple pour remplacer un corpus existant.
+
+Par exemple, demander ensuite : « Quel est le montant TTC du devis et quel acompte
+est prévu ? » ou « La peinture est-elle comprise dans le poste TRV-003 ? », avec
+les passages sources à l'appui.
 
 ## Configuration
 
@@ -80,18 +84,18 @@ revendiquée.
 
 ## Ingestion d'un corpus
 
-Créer un manifeste JSON à côté des fichiers à indexer. Par exemple, avec `SSS.md`
+Créer un manifeste JSON à côté des fichiers à indexer. Par exemple, avec `devis-travaux.md`
 dans le même dossier que `manifest.json` :
 
 ```json
 {
-  "corpus": "project-a/specifications",
+  "corpus": "demo/travaux",
   "sources": [
     {
-      "path": "SSS.md",
-      "document_id": "SSS",
-      "revision": "1.2",
-      "metadata": {"baseline": "v1", "status": "approved", "type": "SSS"}
+      "path": "devis-travaux.md",
+      "document_id": "DEV-2026-0042",
+      "revision": "1.0",
+      "metadata": {"project": "renovation-salon", "status": "example", "type": "devis"}
     }
   ]
 }
@@ -131,7 +135,7 @@ le dossier avec les droits du système et sauvegarder l'index si nécessaire.
 
 Toujours préciser le corpus lors d'une recherche. Les filtres correspondent
 exactement aux métadonnées du manifeste, par exemple
-`{"baseline": "v1", "status": "approved"}` ; ils ne constituent pas des droits
+`{"project": "renovation-salon", "type": "devis"}` ; ils ne constituent pas des droits
 d'accès.
 
 Les ressources `docs://source/{corpus}/{document_id}/{revision}` (segments encodés)
