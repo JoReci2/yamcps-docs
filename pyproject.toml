@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs>=0.4,<1"]
 build-backend = "hatchling.build"
 
 [project]
 name = "yamcps-docs"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Local document retrieval connector for yamcps"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -13,7 +13,7 @@ license-files = ["LICENSE"]
 dependencies = ["yamcps>=0.1"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-asyncio>=1", "ruff", "mypy", "build", "hatchling", "editables", "coverage", "bandit", "radon"]
+dev = ["pytest>=8", "pytest-asyncio>=1", "ruff", "mypy", "build", "hatchling", "hatch-vcs>=0.4,<1", "editables", "coverage", "bandit", "radon"]
 formats = ["pypdf>=5,<7", "python-docx>=1,<2"]
 
 [project.scripts]
@@ -22,6 +22,13 @@ yamcps-docs = "yamcps_docs.cli:main"
 [project.entry-points."yamcps.connectors"]
 docs = "yamcps_docs:DocsConnector"
 
+[tool.hatch.version]
+source = "vcs"
+tag-pattern = "^v(?P<version>.+)$"
+
+[tool.hatch.version.raw-options]
+git_describe_command = ["git", "describe", "--dirty", "--tags", "--long", "--match", "v[0-9]*"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/yamcps_docs"]
 
@@ -29,7 +36,7 @@ packages = ["src/yamcps_docs"]
 Repository = "https://github.com/JoReci2/yamcps-docs"
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/examples", "/README.md", "/contributing.md", "/LICENSE", "/pyproject.toml"]
+include = ["/src", "/tests", "/examples", "/README.md", "/contributing.md", "/LICENSE", "/pyproject.toml", "/.github/workflows"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
