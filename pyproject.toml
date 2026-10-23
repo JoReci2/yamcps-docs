@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
-dependencies = ["yamcps>=0.1,<0.2"]
+dependencies = ["yamcps>=0.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=1", "ruff", "mypy", "build", "hatchling", "editables", "coverage", "bandit", "radon"]
@@ -29,7 +29,7 @@ packages = ["src/yamcps_docs"]
 Repository = "https://github.com/JoReci2/yamcps-docs"
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/examples", "/docs", "/README.md", "/contributing.md", "/MIGRATION.md", "/LICENSE", "/pyproject.toml"]
+include = ["/src", "/tests", "/examples", "/README.md", "/contributing.md", "/LICENSE", "/pyproject.toml"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

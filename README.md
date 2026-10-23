@@ -64,11 +64,26 @@ yamcps serve --connector docs --config-file /chemin/vers/config.json
 
 ### Recherche sémantique locale optionnelle
 
-Sans modèle, la recherche est lexicale et ne comprend pas les synonymes. Pour
-activer la recherche hybride avec un modèle déjà présent sur la machine :
+Sans modèle, la recherche est lexicale et ne comprend pas les synonymes. Installer
+l'extra `rag`, puis télécharger explicitement un modèle Sentence Transformers
+avec yamcps depuis Hugging Face. Par exemple, pour un modèle multilingue :
 
 ```sh
-python -m pip install 'yamcps[rag]>=0.1,<0.2'
+python -m pip install 'yamcps[rag]'
+yamcps models download sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+```
+
+La commande affiche le chemin absolu du dossier téléchargé. Par défaut, il se
+trouve sous `~/.local/share/yamcps/models/<organisation>--<modele>/<commit>`.
+L'option `--revision` permet de choisir une branche, un tag ou un commit ;
+`--destination /chemin/absolu/vers/un-nouveau-dossier` fixe le dossier local.
+Le téléchargement nécessite une connexion réseau et n'active pas le modèle.
+
+Pour activer la recherche hybride, renseigner le chemin affiché dans le champ
+`model`, puis ingérer le corpus dans un nouvel index. Un modèle compatible déjà
+présent sur la machine peut aussi être utilisé directement :
+
+```sh
 yamcps configs set --connector docs --name model --value /chemin/absolu/vers/modele-local
 yamcps configs set --connector docs --name index --value /chemin/absolu/docs-hybrid.sqlite3
 yamcps-docs ingest /chemin/vers/manifest.json
@@ -76,9 +91,14 @@ yamcps serve --connector docs
 ```
 
 Utiliser le même modèle pour l'ingestion et la recherche. Un changement de modèle
-exige un nouvel index et une réingestion. Aucun modèle n'est fourni ni téléchargé,
-et aucun code distant n'est autorisé. Côté serveur, le modèle est chargé au premier
-appel MCP, dans un thread, jamais à l'import ou à l'enregistrement du plugin.
+exige un nouvel index et une réingestion. Aucun modèle n'est fourni ni téléchargé
+automatiquement, et aucun code distant n'est autorisé. Côté serveur, le modèle est
+chargé au premier appel MCP, dans un thread, jamais à l'import ou à l'enregistrement
+du plugin.
+
+Pour un serveur hors ligne, télécharger le modèle sur une machine connectée,
+puis copier son dossier sur le serveur, y installer aussi l'extra `rag` et
+configurer `model` avec le chemin local de cette copie.
 Évaluer sa qualité sur vos questions métier ; aucune qualification IVVQ n'est
 revendiquée.
 
@@ -155,8 +175,7 @@ Le skill embarqué
 [docs-research](src/yamcps_docs/skills/docs-research/SKILL.md) guide la recherche de
 preuves et la citation des révisions exactes.
 
-## Contribution et origine
+## Contribution
 
 Voir [contributing.md](contributing.md) pour l'installation de développement,
-l'intégration au moteur et les validations, et [MIGRATION.md](MIGRATION.md) pour
-l'origine du package et les notes de migration.
+l'intégration au moteur et les validations.
