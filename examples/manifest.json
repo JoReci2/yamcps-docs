@@ -1,0 +1,15 @@
+{
+  "corpus": "demo/travaux",
+  "sources": [
+    {
+      "path": "devis-travaux.md",
+      "document_id": "DEV-2026-0042",
+      "revision": "1.0",
+      "metadata": {
+        "project": "renovation-salon",
+        "status": "example",
+        "type": "devis"
+      }
+    }
+  ]
+}
