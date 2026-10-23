@@ -30,3 +30,15 @@ les secrets hors des logs, et aucun appel réseau à l'import ou à l'enregistre
 Tester une installation wheel hors du dépôt, sans PYTHONPATH vers ses sources.
 Conserver une couverture >80 %, examiner Radon/Bandit et signaler les limites.
 Ne pas publier sur PyPI ni déclencher une release sans demande explicite.
+
+## Intégration au moteur
+
+Le connecteur utilise la capacité RAG native de yamcps : `rag_config()` déclare
+les chemins et `configure_rag()` reçoit le contexte paresseux géré par le moteur.
+`required_configs()` déclare les champs non secrets `index` et `model`, puis
+`configure_configs()` reçoit leurs valeurs. Aucun package RAG séparé n'est requis.
+L'ingestion CLI résout la même configuration que le serveur.
+
+Conserver la séparation entre ingestion explicite et outils MCP en lecture seule,
+sans accès aux fichiers sources depuis les paramètres MCP. Les formats, limites,
+commandes et règles de citation sont décrits dans le [README](README.md).
