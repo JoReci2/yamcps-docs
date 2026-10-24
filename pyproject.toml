@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
-dependencies = ["yamcps>=0.1"]
+dependencies = ["yamcps>=0.3.0,<0.4"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=1", "ruff", "mypy", "build", "hatchling", "hatch-vcs>=0.4,<1", "editables", "coverage", "bandit", "radon"]

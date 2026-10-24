@@ -4,6 +4,7 @@ import contextlib
 import io
 import tempfile
 import unittest
+from importlib.metadata import entry_points
 from pathlib import Path
 from unittest.mock import patch
 
@@ -24,6 +25,24 @@ class CoreIntegrationTests(unittest.TestCase):
         environment = patch.dict("os.environ", {"YAMCPS_RAG_DIR": str(self.root)})
         environment.start()
         self.addCleanup(environment.stop)
+
+    def test_entry_point_and_duplicate_connector_rejection(self):
+        entries = [e for e in entry_points(group="yamcps.connectors") if e.name == "docs"]
+        self.assertEqual(len(entries), 1)
+        self.assertIsInstance(entries[0].load()(), DocsConnector)
+        with self.assertRaises(ValueError):
+            create_server(["docs", "docs"], config_values={})
+
+    def test_composition_keeps_rag_lazy(self):
+        docs = DocsConnector()
+        with (
+            patch("yamcps.server.load", return_value=[docs]),
+            patch.object(RagContext, "index", new_callable=unittest.mock.PropertyMock) as index,
+        ):
+            index.side_effect = AssertionError("Index accessed during startup")
+            create_server(config_store=self.store)
+            index.assert_not_called()
+        self.assertFalse((self.root / "docs.sqlite3").exists())
 
     def test_cli_set_list_delete_and_docs_share_the_store(self):
         arguments = ["--config-file", str(self.store.path)]

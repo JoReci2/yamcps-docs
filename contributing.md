@@ -1,11 +1,13 @@
 # Contribuer à yamcps-docs
 
-Python ≥ 3.12. Installer d'abord un moteur yamcps compatible depuis sa distribution,
-son wheel ou, pour travailler sur les deux dépôts, `python -m pip install -e ../yamcps`.
-Depuis la racine de ce dépôt dans un environnement activé :
+Python ≥ 3.12 et yamcps 0.3.0. Depuis la racine de ce dépôt, créer un
+environnement isolé et installer la version exacte du moteur pour la validation :
 
 ```sh
-python -m pip install -e '.[dev,formats]'
+python -m venv .venv
+# Activer cet environnement selon le système.
+python -m pip install -e '.[dev,formats]' 'yamcps==0.3.0'
+python -c "from importlib.metadata import version; print(version('yamcps'), version('mcp'))"
 ruff format --check src tests .github/workflows
 ruff check src tests .github/workflows
 mypy src .github/workflows
@@ -27,7 +29,17 @@ Suivre PEP 8 (100 caractères), typer les interfaces publiques, documenter en an
 au format Google ; guides en français. Utiliser unittest pour les nouveaux tests,
 conserver les tests existants et simuler les API. Garder stdout pour MCP stdio,
 les secrets hors des logs, et aucun appel réseau à l'import ou à l'enregistrement.
-Tester une installation wheel hors du dépôt, sans PYTHONPATH vers ses sources.
+Tester une installation wheel hors du dépôt, sans PYTHONPATH vers ses sources :
+
+```sh
+python -m venv /tmp/yamcps-docs-wheel-check
+/tmp/yamcps-docs-wheel-check/bin/python -m pip install /chemin/absolu/plugin.whl 'yamcps==0.3.0' pytest pytest-asyncio pypdf python-docx
+cd /tmp
+/tmp/yamcps-docs-wheel-check/bin/python -c "from importlib.metadata import version; print(version('yamcps'))"
+/tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_core_integration.py'
+/tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_docs.py'
+```
+
 Conserver une couverture >80 %, examiner Radon/Bandit et signaler les limites.
 Ne pas publier sur PyPI ni déclencher une release sans demande explicite.
 
