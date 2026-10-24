@@ -7,8 +7,17 @@ Recherche documentaire locale via le RAG natif du moteur
 en lecture seule dans MCP ; l'ingestion se fait séparément en ligne de commande.
 Aucun secret n'est requis.
 
-TXT et Markdown UTF-8 sont pris en charge de base ; PDF texte et DOCX nécessitent
-l'extra `formats`. L'extraction ne fait ni OCR, ni extraction de figures, ni
+TXT et Markdown UTF-8 sont pris en charge de base. Les autres formats
+s’installent séparément avec les extras suivants :
+
+| Extra | Formats pris en charge |
+| --- | --- |
+| `pdf` | PDF texte |
+| `words` | Word (`.docx`) |
+| `excel` | Excel (`.xlsx`, `.xls`) |
+| `all` | Tous les formats ci-dessus |
+
+L'extraction ne fait ni OCR, ni extraction de figures, ni
 reconstruction de la mise en page.
 
 ## Quickstart
@@ -17,9 +26,15 @@ Python ≥ 3.12 et yamcps ≥ 0.3.0, < 0.4 sont requis. La compatibilité est
 vérifiée avec yamcps 0.3.0. Installer le plugin dans le même environnement que le moteur :
 
 ```sh
-python -m pip install 'yamcps-docs[formats]'
+python -m pip install 'yamcps-docs[all]'
 yamcps configs set --connector docs
 ```
+
+Pour installer uniquement un lecteur, utiliser par exemple
+`python -m pip install 'yamcps-docs[pdf]'`, `'yamcps-docs[words]'` ou
+`'yamcps-docs[excel]'`. Les extras se combinent aussi :
+`python -m pip install 'yamcps-docs[pdf,excel]'`.
+
 
 Laisser les champs `index` et `model` vides pour utiliser l'index par défaut du
 moteur et la recherche lexicale. Depuis la racine de ce dépôt, essayer le devis de travaux
@@ -81,6 +96,29 @@ puis copier son dossier sur le serveur, y installer aussi l'extra `rag` et
 configurer `model` avec le chemin local de cette copie.
 Évaluer sa qualité sur vos questions métier ; aucune qualification IVVQ n'est
 revendiquée.
+
+### Documents Excel
+
+L'extra `excel` (également inclus dans `all`) installe `openpyxl` pour `.xlsx` et `xlrd` pour `.xls`.
+Ajouter le classeur au manifeste comme les autres sources ; une révision du
+classeur devient un document indexé. Les feuilles, y compris masquées, sont lues
+dans l'ordre du classeur. Les feuilles et cellules vides sont ignorées.
+Le texte extrait contient le nom de chaque feuille et les coordonnées des cellules,
+par exemple `Sheet: Budget` puis `A2: TRV-003 | B2: 1500`.
+
+Les formules `.xlsx` sont conservées comme expressions, sans calcul. Pour `.xls`,
+seuls leurs résultats enregistrés sont disponibles ; ils peuvent être anciens.
+Les dates sont converties en ISO, les nombres et booléens en texte brut. Les formats
+d'affichage (monnaie, pourcentage, zéros initiaux), graphiques, images, commentaires
+et la mise en page ne sont pas reproduits. Les cellules fusionnées ne répètent pas
+la valeur de leur cellule d'origine. Aucun lien externe n'est actualisé et aucune
+macro n'est exécutée. Les formats `.xlsm` et `.xlsb` ne sont pas pris en charge.
+
+La lecture est limitée à un million de cellules parcourues par classeur, y compris
+les cellules vides des zones parcourues, et à 4 millions de caractères extraits.
+La limite de 20 MiB par fichier s'applique aussi. Un classeur vide, invalide ou trop
+grand fait échouer le snapshot entier sans remplacer le corpus précédent.
+Les offsets de citation désignent ce texte extrait, pas une plage Excel native.
 
 ### Ingestion d'un corpus
 

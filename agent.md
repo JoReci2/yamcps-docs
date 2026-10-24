@@ -26,10 +26,10 @@ Python >=3.12 ; moteur yamcps installé comme dépendance.
 Le plugin doit être explicitement compatible avec yamcps 0.3.0.
 Préserver cette compatibilité lors des évolutions et la vérifier avec cette
 version du moteur dans les tests d'intégration et les contrôles du package installé.
-Installation de développement : `python -m pip install -e '.[dev,formats]'`.
+Installation de développement : `python -m pip install -e '.[dev,all]'`.
 
 Pour contrôler la compatibilité, utiliser un environnement isolé avec la version
-exacte du moteur : `python -m pip install -e '.[dev,formats]' 'yamcps==0.3.0'`.
+exacte du moteur : `python -m pip install -e '.[dev,all]' 'yamcps==0.3.0'`.
 Vérifier la version effectivement installée avant les tests d'intégration :
 `python -c "from importlib.metadata import version; print(version('yamcps'))"`.
 Pour le contrôle du wheel hors du dépôt, installer également `yamcps==0.3.0`
