@@ -6,7 +6,7 @@ environnement isolé et installer la version exacte du moteur pour la validation
 ```sh
 python -m venv .venv
 # Activer cet environnement selon le système.
-python -m pip install -e '.[dev,formats]' 'yamcps==0.3.0'
+python -m pip install -e '.[dev,all]' 'yamcps==0.3.0'
 python -c "from importlib.metadata import version; print(version('yamcps'), version('mcp'))"
 ruff format --check src tests .github/workflows
 ruff check src tests .github/workflows
@@ -33,11 +33,12 @@ Tester une installation wheel hors du dépôt, sans PYTHONPATH vers ses sources 
 
 ```sh
 python -m venv /tmp/yamcps-docs-wheel-check
-/tmp/yamcps-docs-wheel-check/bin/python -m pip install /chemin/absolu/plugin.whl 'yamcps==0.3.0' pytest pytest-asyncio pypdf python-docx
+/tmp/yamcps-docs-wheel-check/bin/python -m pip install /chemin/absolu/plugin.whl 'yamcps==0.3.0' pytest pytest-asyncio pypdf python-docx openpyxl xlrd
 cd /tmp
 /tmp/yamcps-docs-wheel-check/bin/python -c "from importlib.metadata import version; print(version('yamcps'))"
 /tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_core_integration.py'
 /tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_docs.py'
+/tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_excel.py'
 ```
 
 Conserver une couverture >80 %, examiner Radon/Bandit et signaler les limites.

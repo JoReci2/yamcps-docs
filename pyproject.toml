@@ -14,7 +14,10 @@ dependencies = ["yamcps>=0.3.0,<0.4"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=1", "ruff", "mypy", "build", "hatchling", "hatch-vcs>=0.4,<1", "editables", "coverage", "bandit", "radon"]
-formats = ["pypdf>=5,<7", "python-docx>=1,<2"]
+pdf = ["pypdf>=5,<7"]
+words = ["python-docx>=1,<2"]
+excel = ["openpyxl>=3.1,<4", "xlrd>=2,<3"]
+all = ["pypdf>=5,<7", "python-docx>=1,<2", "openpyxl>=3.1,<4", "xlrd>=2,<3"]
 
 [project.scripts]
 yamcps-docs = "yamcps_docs.cli:main"
