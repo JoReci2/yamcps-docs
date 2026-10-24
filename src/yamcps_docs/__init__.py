@@ -8,9 +8,9 @@ from typing import Any
 from mcp.server import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
-from yamcps import ConfigSpec, ConfigStore, ConnectorConfigs
+from yamcps import ConfigSpec, ConfigStore, ConnectorConfigs, RagConfig, RagContext
 from yamcps.configs import prepare_configs
-from yamcps.rag import Index, RagConfig, RagContext
+from yamcps.rag import RetrievalIndex
 
 
 def _rag_config(configs: ConnectorConfigs) -> RagConfig:
@@ -22,7 +22,7 @@ def _rag_config(configs: ConnectorConfigs) -> RagConfig:
     )
 
 
-def configured_index(config_file: Path | None = None) -> Index:
+def configured_index(config_file: Path | None = None) -> RetrievalIndex:
     """Create an offline ingestion index using the same core settings as the plugin.
 
     Args:
@@ -85,7 +85,7 @@ class DocsConnector:
         self._rag = rag
 
     @property
-    def index(self) -> Index:
+    def index(self) -> RetrievalIndex:
         """Return the injected index on first use, outside server registration."""
         if self._rag is None:
             raise ValueError("The core has not configured the docs RAG context")

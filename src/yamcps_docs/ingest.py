@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
-from yamcps.rag import Document, Index
+from yamcps.rag import Document, RetrievalIndex
 
 
 class Source(BaseModel):
@@ -60,7 +60,7 @@ def _extract(path: Path) -> str:
     raise ValueError("Supported source formats: .txt, .md, .pdf, .docx")
 
 
-def ingest(index: Index, manifest_path: Path, *, chunk_size: int = 1200) -> dict[str, int]:
+def ingest(index: RetrievalIndex, manifest_path: Path, *, chunk_size: int = 1200) -> dict[str, int]:
     """Extract all sources before atomically synchronizing a corpus.
 
     Args:
