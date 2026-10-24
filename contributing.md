@@ -33,12 +33,13 @@ Tester une installation wheel hors du dépôt, sans PYTHONPATH vers ses sources 
 
 ```sh
 python -m venv /tmp/yamcps-docs-wheel-check
-/tmp/yamcps-docs-wheel-check/bin/python -m pip install /chemin/absolu/plugin.whl 'yamcps==0.3.0' pytest pytest-asyncio pypdf python-docx openpyxl xlrd
+/tmp/yamcps-docs-wheel-check/bin/python -m pip install /chemin/absolu/plugin.whl 'yamcps==0.3.0' pytest pytest-asyncio pypdf python-docx openpyxl xlrd python-pptx
 cd /tmp
 /tmp/yamcps-docs-wheel-check/bin/python -c "from importlib.metadata import version; print(version('yamcps'))"
 /tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_core_integration.py'
 /tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_docs.py'
 /tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_excel.py'
+/tmp/yamcps-docs-wheel-check/bin/python -m unittest discover -s /chemin/absolu/yamcps-docs/tests -p 'test_powerpoint.py'
 ```
 
 Conserver une couverture >80 %, examiner Radon/Bandit et signaler les limites.
