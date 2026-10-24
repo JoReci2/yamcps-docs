@@ -123,6 +123,46 @@ def _extract_excel(path: Path) -> str:
         return _excel_text(sheets())
 
 
+def _powerpoint_shapes(shapes: Iterable[Any]) -> Iterable[str]:
+    # Use a stack to support nested groups without recursion depth limits.
+    pending = [iter(shapes)]
+    while pending:
+        shape = next(pending[-1], None)
+        if shape is None:
+            pending.pop()
+            continue
+        if hasattr(shape, "shapes"):
+            pending.append(iter(shape.shapes))
+        elif shape.has_text_frame:
+            yield shape.text_frame.text
+        elif shape.has_table:
+            for row in shape.table.rows:
+                cells = [cell.text for cell in row.cells if not cell.is_spanned]
+                if any(text.strip() for text in cells):
+                    yield " | ".join(cells)
+
+
+def _extract_powerpoint(path: Path) -> str:
+    presentation = importlib.import_module("pptx").Presentation(str(path))
+    lines: list[str] = []
+    characters = 0
+    for number, slide in enumerate(presentation.slides, 1):
+        started = False
+        for text in _powerpoint_shapes(slide.shapes):
+            if not text.strip():
+                continue
+            if not started:
+                heading = f"Slide: {number}"
+                characters += len(heading) + 1
+                lines.append(heading)
+                started = True
+            characters += len(text) + 1
+            if characters > 4_000_000:
+                raise ValueError("Source exceeds 4 million extracted characters")
+            lines.append(text)
+    return "\n".join(lines)
+
+
 def _extract(path: Path) -> str:
     suffix = path.suffix.lower()
     if suffix in {".txt", ".md"}:
@@ -139,7 +179,9 @@ def _extract(path: Path) -> str:
         return "\n".join(paragraphs + tables)
     if suffix in {".xlsx", ".xls"}:
         return _extract_excel(path)
-    raise ValueError("Supported source formats: .txt, .md, .pdf, .docx, .xlsx, .xls")
+    if suffix == ".pptx":
+        return _extract_powerpoint(path)
+    raise ValueError("Supported source formats: .txt, .md, .pdf, .docx, .xlsx, .xls, .pptx")
 
 
 def ingest(index: RetrievalIndex, manifest_path: Path, *, chunk_size: int = 1200) -> dict[str, int]:

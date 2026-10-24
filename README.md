@@ -15,6 +15,7 @@ s’installent séparément avec les extras suivants :
 | `pdf` | PDF texte |
 | `words` | Word (`.docx`) |
 | `excel` | Excel (`.xlsx`, `.xls`) |
+| `powerpoint` | PowerPoint (`.pptx`) |
 | `all` | Tous les formats ci-dessus |
 
 L'extraction ne fait ni OCR, ni extraction de figures, ni
@@ -96,6 +97,26 @@ puis copier son dossier sur le serveur, y installer aussi l'extra `rag` et
 configurer `model` avec le chemin local de cette copie.
 Évaluer sa qualité sur vos questions métier ; aucune qualification IVVQ n'est
 revendiquée.
+
+### Documents PowerPoint
+
+Installer `yamcps-docs[powerpoint]` ou `yamcps-docs[all]` pour lire les `.pptx`
+avec `python-pptx`. Ajouter la présentation au manifeste comme les autres sources.
+Une révision de présentation devient un document indexé.
+
+L'extraction conserve le texte des formes (y compris les groupes imbriqués) et des
+tableaux, avec un repère `Slide: 1` pour chaque diapositive contenant du texte.
+Les diapositives vides sont ignorées, mais leur numéro reste compté. Les formes
+suivent l'ordre du fichier, qui peut différer de l'ordre visuel de lecture.
+Les diapositives masquées sont incluses. Les cellules fusionnées des tableaux
+ne répètent pas le texte de leur cellule d'origine.
+
+Les notes du présentateur, commentaires, masques, graphiques, SmartArt, images,
+objets incorporés et animations ne sont pas extraits. Aucun OCR ni rendu visuel
+n'est effectué. Les anciens `.ppt` et les `.pptm` ne sont pas pris en charge.
+Les limites de 20 MiB et de 4 millions de caractères s'appliquent ; un fichier vide,
+invalide ou trop grand fait échouer le snapshot sans remplacer le corpus précédent.
+Les offsets de citation concernent le texte extrait, pas les coordonnées visuelles.
 
 ### Documents Excel
 
